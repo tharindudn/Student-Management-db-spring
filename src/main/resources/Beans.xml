@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+
+    <!-- Definition for studentimpl bean -->
+    <bean id="studentimpl" class="repository.impl.StudentImpl"></bean>
+
+    <!-- Definition for examimpl bean -->
+    <bean id="examimpl" class="repository.impl.ExamImpl"></bean>
+
+    <!-- Definition for studentcontrol bean -->
+    <bean id="studentcontrol" class="controller.StudentControl">
+        <property name="studentRepository">
+            <ref bean="studentimpl"/>
+        </property>
+        <property name="examRepository">
+            <ref bean="examimpl"/>
+        </property>
+    </bean>
+</beans>
