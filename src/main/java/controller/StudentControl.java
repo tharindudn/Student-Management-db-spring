@@ -77,7 +77,7 @@ public class StudentControl {
             e.printStackTrace();
         }
 
-        if (student != null) {
+        if (student.getId()== id) {
             int[] marks = new int[2];
 
             System.out.println("Student exist...");
@@ -112,20 +112,20 @@ public class StudentControl {
         System.out.println("Enter student id to check marks: ");
         logger.info("Enter student id to check marks: ");
         id = in.nextInt();
-        int[] marks = new int[2];
+        int[] marks;
         try {
-            marks = studentRepository.checkMarks(id);
+            student= studentRepository.checkMarks(id);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if (marks != null) {
+        if (student.getId()== id) {
 
 
             System.out.println("Student exist...");
             logger.info("Student exist...");
-
+            marks=student.getMarks();
             System.out.println("NAME     | MARKS | GRADE  |");
             System.out.println("Subject1 | " + marks[0] + "    |  " + examRepository.grade(marks[0]) + "     |");
             System.out.println("Subject2 | " + marks[1] + "    |  " + examRepository.grade(marks[1]) + "     |");

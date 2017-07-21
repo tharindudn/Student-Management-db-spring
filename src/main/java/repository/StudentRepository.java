@@ -15,7 +15,7 @@ public interface StudentRepository {
     Student checkStudent(int id) throws SQLException, ClassNotFoundException;
 
     int addstudentMarks(Student student) throws SQLException, ClassNotFoundException;
-    int[] checkMarks(int id) throws SQLException, ClassNotFoundException;
+    Student checkMarks(int id) throws SQLException, ClassNotFoundException;
     int updatestudentMarks(Student student) throws SQLException, ClassNotFoundException;
     int deletestudentMarks(int id) throws SQLException, ClassNotFoundException;
 }

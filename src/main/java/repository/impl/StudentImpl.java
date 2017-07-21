@@ -1,99 +1,77 @@
 package repository.impl;
 
-import connection.DBConnection;
+import Mapper.marksmapper;
+import Mapper.studentmapper;
 import model.Student;
+import org.springframework.jdbc.core.JdbcTemplate;
 import repository.StudentRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import javax.sql.DataSource;
+
 import java.sql.SQLException;
 
 /**
  * Created by tharindu on 7/18/17.
  */
 public class StudentImpl implements StudentRepository {
-    Connection con;
+    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplateObject;
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+        this.jdbcTemplateObject = new JdbcTemplate(dataSource);
+    }
+
 
     public int addstudentDetails(Student student) throws SQLException, ClassNotFoundException {
-        String quary = "insert into Student(ID,Stname) Values(?,?)";
 
-        PreparedStatement ps = DBConnection.getConnectionToDB().prepareStatement(quary);
-        ps.setInt(1, student.getId());
-        ps.setString(2, student.getName());
-        int res = ps.executeUpdate();
+        String SQL = "insert into Student (ID,Stname) values (?, ?)";
+        int res = jdbcTemplateObject.update(SQL, student.getId(), student.getName());
         return res;
+
     }
 
     public Student checkStudent(int id) throws SQLException, ClassNotFoundException {
-        String quary = "SELECT * FROM Student WHERE ID=?";
-        PreparedStatement ps = DBConnection.getConnectionToDB().prepareStatement(quary);
-        ps.setInt(1, id);
-        ResultSet rst = null;
-        Student student = new Student();
-        try {
-           rst = ps.executeQuery();
 
-
-            if (rst.next()) {
-                student.setId(rst.getInt(1));
-                student.setName(rst.getString(2));
-                return student;
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
+        String SQL = "select * from Student where ID = ?";
+        Student student = jdbcTemplateObject.queryForObject(SQL,
+                new Object[]{id}, new studentmapper());
         return student;
+
     }
 
-    public int[] checkMarks(int id) throws SQLException, ClassNotFoundException {
-        String quary = "SELECT * FROM Marks WHERE ID=?";
-        PreparedStatement ps = DBConnection.getConnectionToDB().prepareStatement(quary);
-        ps.setInt(1, id);
-        ResultSet rst = null;
-        int[] marks = new int[2];
-        try {
-            rst = ps.executeQuery();
+    public Student checkMarks(int id) throws SQLException, ClassNotFoundException {
+        String SQL = "select * from Marks where ID = ?";
+        Student student = jdbcTemplateObject.queryForObject(SQL,
+                new Object[]{id}, new marksmapper());
 
+        return student;
 
-            if (rst.next()) {
-                marks[0] = rst.getInt(2);
-                marks[1] = rst.getInt(3);
-                return marks;
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return marks;
     }
 
 
     public int addstudentMarks(Student student) throws SQLException, ClassNotFoundException {
         int[] marks = student.getMarks();
-        String quary = "insert into Marks(ID,Subject1,Subject2) Values(?,?,?)";
-        PreparedStatement ps = DBConnection.getConnectionToDB().prepareStatement(quary);
-        ps.setInt(1,student.getId());
-        ps.setInt(2,marks[0]);
-        ps.setInt(3,marks[1]);
-        int res = ps.executeUpdate();
+        String SQL = "insert into Marks (ID,Subject1,Subject2) values (?, ?,?)";
+        int res = jdbcTemplateObject.update(SQL, student.getId(), marks[0],marks[1]);
+        //System.out.println("Created Record Name = " + name + " Age = " + age);
         return res;
+
     }
+
     public int updatestudentMarks(Student student) throws SQLException, ClassNotFoundException {
         int[] marks = student.getMarks();
-        String quary = "update Marks set Subject1=?,Subject2=? where ID=?";
-        PreparedStatement ps = DBConnection.getConnectionToDB().prepareStatement(quary);
-        ps.setInt(1,marks[0]);
-        ps.setInt(2,marks[1]);
-        ps.setInt(3,student.getId());
-        int res = ps.executeUpdate();
+        String SQL = "update Marks set Subject1=?,Subject2=? where ID=?";
+        int res=jdbcTemplateObject.update(SQL, marks[0],marks[1],student.getId());
+        System.out.println("Updated Record with ID = " + student.getId());
         return res;
     }
-    public int deletestudentMarks(int id) throws SQLException, ClassNotFoundException {
 
-        String quary = "delete from Marks where ID=?";
-        PreparedStatement ps = DBConnection.getConnectionToDB().prepareStatement(quary);
-        ps.setInt(1,id);
-        int res = ps.executeUpdate();
+    public int deletestudentMarks(int id) throws SQLException, ClassNotFoundException {
+        String SQL = "delete from Marks where ID=?";
+        int res=jdbcTemplateObject.update(SQL,id);
+        System.out.println("Delete Record with ID = " + id);
         return res;
+
     }
 }
