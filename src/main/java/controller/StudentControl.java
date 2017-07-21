@@ -20,7 +20,8 @@ public class StudentControl {
     private StudentRepository studentRepository;
     private ExamRepository examRepository;
     Scanner in = new Scanner(System.in);
-
+    int marks1;
+    int marks2;
 
     int id;
     Student student = null;
@@ -78,17 +79,17 @@ public class StudentControl {
         }
 
         if (student.getId()== id) {
-            int[] marks = new int[2];
 
             System.out.println("Student exist...");
             logger.info("Student exist...");
             System.out.println("Enter marks for subject 1...");
             logger.info("Enter marks for subject 1...");
-            marks[0] = in.nextInt();
+            marks1 = in.nextInt();
             System.out.println("Enter marks for subject 2...");
             logger.info("Enter marks for subject 2...");
-            marks[1] = in.nextInt();
-            student.setMarks(marks);
+            marks2 = in.nextInt();
+            student.setMarks1(marks1);
+            student.setMarks2(marks2);
             result = 0;
             try {
                 result = studentRepository.addstudentMarks(student);
@@ -97,7 +98,7 @@ public class StudentControl {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            if (result == 1) {
+            if (result == student.getId()) {
                 System.out.println("marks added...");
                 logger.info("marks added...");
             }
@@ -114,7 +115,7 @@ public class StudentControl {
         id = in.nextInt();
         int[] marks;
         try {
-            student= studentRepository.checkMarks(id);
+            student= studentRepository.checkStudent(id);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -125,10 +126,11 @@ public class StudentControl {
 
             System.out.println("Student exist...");
             logger.info("Student exist...");
-            marks=student.getMarks();
+            marks1=student.getMarks1();
+            marks2=student.getMarks2();
             System.out.println("NAME     | MARKS | GRADE  |");
-            System.out.println("Subject1 | " + marks[0] + "    |  " + examRepository.grade(marks[0]) + "     |");
-            System.out.println("Subject2 | " + marks[1] + "    |  " + examRepository.grade(marks[1]) + "     |");
+            System.out.println("Subject1 | " + marks1 + "    |  " + examRepository.grade(marks1) + "     |");
+            System.out.println("Subject2 | " + marks2 + "    |  " + examRepository.grade(marks2) + "     |");
 
         } else {
             System.out.println("No student with " + id);
@@ -140,27 +142,22 @@ public class StudentControl {
         System.out.println("Enter student id to update marks: ");
 
         id = in.nextInt();
-        int[] marks = new int[2];
+
         System.out.println("Enter marks for sub 1: ");
-        marks[0] = in.nextInt();
+        marks1 = in.nextInt();
         System.out.println("Enter marks for sub 2: ");
-        marks[1] = in.nextInt();
+        marks2 = in.nextInt();
         student = new Student();
         student.setId(id);
-        student.setMarks(marks);
+        student.setMarks1(marks1);
+        student.setMarks2(marks2);
+       // student.setName("DDDD4");
         try {
-            result = studentRepository.updatestudentMarks(student);
+            studentRepository.updatestudentMarks(student);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
-        if (result == 1) {
-            System.out.println("updated...");
-            logger.info("marks updated...");
-        } else {
-            System.out.println("Update fail..." + id);
-            logger.info("Update fail..." + id);
         }
 
     }
@@ -168,21 +165,16 @@ public class StudentControl {
     public void deletemarks() {
         System.out.println("Enter student id to Delete marks");
         id = in.nextInt();
-
+        student = new Student();
+        student.setId(id);
         try {
-            result = studentRepository.deletestudentMarks(id);
+            studentRepository.deletestudentMarks(student);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if (result == 1) {
-            System.out.println("deleted...");
-            logger.info("marks deleted...");
-        } else {
-            System.out.println("Delete fail..." + id);
-            logger.info("Delete fail..." + id);
-        }
+
     }
 
 }

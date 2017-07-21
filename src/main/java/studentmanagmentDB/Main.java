@@ -83,7 +83,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        String log4jConfigFile = "/home/tharindu/IdeaProjects/Student-Management-db/src/main/resources/log4j.properties";
+        String log4jConfigFile = "/home/tharindu/IdeaProjects/studentmanagementSpring/src/main/resources/log4j.properties";
         //System.getProperty("user.dir")
         //+ File.separator + "log4j.properties";
         PropertyConfigurator.configure(log4jConfigFile);
